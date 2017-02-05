@@ -25,7 +25,7 @@ O Miniconda *ainda* não vem com o Python 3.6 por padrão. Para atualizar é nec
 * jupyter notebook
 
 ### Troubleshooting
-Tive problemas para iniciar o kernel. Parece que é um problema do bash do Linux no Windows 10. Para resolver o problema feche o Jupyter no browser e aperte Ctrl+C duas vezes para encerrar o servidor de notebooks. Os passos a seguir estão em https://github.com/Microsoft/BashOnWindows/issues/185
+Tive problemas para iniciar o kernel. Parece que é um problema do bash on Ubuntu on Windows 10. Para resolver o problema feche o Jupyter no browser e aperte Ctrl+C duas vezes para encerrar o servidor de notebooks. Os passos a seguir estão em https://github.com/Microsoft/BashOnWindows/issues/185
 
 * source deactivate titanic
 * sudo add-apt-repository ppa:aseering/wsl
@@ -33,6 +33,8 @@ Tive problemas para iniciar o kernel. Parece que é um problema do bash do Linux
 * sudo apt-get install libzmq3
 * source activate titanic
 * conda install -c jzuhone zeromq=4.1.dev0
+
+Tive problemas também no Bash on Ubuntu on Windows 10 para plotar gráficos com o matplotlib. Parece ser um problema da MKL. A alternativa foi fazer <code>export KMP_AFFINITY=disabled</code> antes de executar o código. Mas informações em https://github.com/Microsoft/BashOnWindows/issues/785
 
 Depois disso consegui executar o jupyter notebook sem problemas e o kernel reconheceu a instalação do pandas.
 
