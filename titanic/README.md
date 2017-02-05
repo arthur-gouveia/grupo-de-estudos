@@ -8,7 +8,7 @@ One of the reasons that the shipwreck led to such loss of life was that there we
 
 In this challenge, we ask you to complete the analysis of what sorts of people were likely to survive. In particular, we ask you to apply the tools of machine learning to predict which passengers survived the tragedy.
 
-<code>VARIABLE DESCRIPTIONS:
+<pre>VARIABLE DESCRIPTIONS:
 survival        Survival
                 (0 = No; 1 = Yes)
 pclass          Passenger Class
@@ -44,4 +44,4 @@ Other family relatives excluded from this study include cousins,
 nephews/nieces, aunts/uncles, and in-laws.  Some children travelled
 only with a nanny, therefore parch=0 for them.  As well, some
 travelled with very close friends or neighbors in a village, however,
-the definitions do not support such relations.</code>
+the definitions do not support such relations.</pre>
