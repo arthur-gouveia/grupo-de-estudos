@@ -4,12 +4,12 @@
 # # Titanic: Machine Learning from Disaster
 # ## Bibliotecas utilizadas
 
-# In[1]:
+# In[8]:
 
-from collections import namedtuple
 from numbers import Number
 
 import pandas as pd
+get_ipython().magic('matplotlib inline')
 
 
 # ## Lendo o arquivo e exibindo suas extremidades
@@ -28,7 +28,7 @@ csv_train.tail()
 # ## Criando um novo dataframe
 # Esse novo dataframe terá apenas as colunas úteis para modelagem. Serão removidos o nome e o número do ticket, PassengerId será colocado como índice e as variáveis Sex e Embarked serão transformadas em dummy
 
-# In[19]:
+# In[4]:
 
 train = csv_train.copy()  # Cria uma cópia do dataframe
 train.set_index('PassengerId', inplace=True)  # Define PassengerId como novo índice das linhas
@@ -39,7 +39,7 @@ train.drop(['Sex', 'Embarked', 'Name', 'Ticket'], axis=1, inplace=True)  # Remov
 
 # # Criando a variável CabinType
 
-# In[20]:
+# In[5]:
 
 def gera_CabinType(cabin):
     if isinstance(cabin, Number):
@@ -57,31 +57,39 @@ train = pd.concat([train, CabinTypes], axis=1)
 train.head()
 
 
-# In[21]:
-
-print(train.groupby('CabinType').apply(lambda x: x.Fare.min()))
-print(train.groupby('CabinType').apply(lambda x: x.Fare.mean()))
-print(train.groupby('CabinType').apply(lambda x: x.Fare.max()))
-
-
 # ## Analisando valores missing em Cabin
-# Comparando o preço e a classe dos passageiros sem número de cabine
+# Comparando o preço e a classe dos passageiros sem número de cabine (ou com CabinType 'X')
 
-# In[7]:
+# In[6]:
 
-PreçosCabines = namedtuple('PreçosCabines', 'min méd max')
+def gera_preços(df):
+    return pd.DataFrame({'Valor mínimo': df.Fare.min(),
+            'Valor médio': df.Fare.mean(),
+            'Valor máximo': df.Fare.max(),
+            }, index=[len(df.Fare)])
+
+train.groupby('CabinType').apply(func=gera_preços)
+
+
+# In[16]:
+
 com_cabine = train.loc[train.Cabin.notnull(), :]
-sem_cabine = train.loc[train.Cabin.isnull(), :]
-preços_sem_cabine = PreçosCabines(sem_cabine.Fare.min(),
-                                  sem_cabine.Fare.mean(),
-                                  sem_cabine.Fare.max())
-preços_com_cabine = PreçosCabines(com_cabine.Fare.min(),
-                                  com_cabine.Fare.mean(),
-                                  com_cabine.Fare.max())
-print(f'Preços dos tickets dos passageiros sem cabine: {preços_sem_cabine}')
-print(f'Preços dos tickets dos passageiros com cabine: {preços_com_cabine}')
+com_cabine.boxplot('Fare', by='CabinType', figsize=(12, 8))
 
-train.loc[train.Fare > 512, :]
 
+# **É possível ver que há evidências de uma relação entre CabinType e Fare. Vou testar isso com uma ANOVA**
+
+# In[30]:
+
+import statsmodels.api as sm
+from statsmodels.formula.api import ols
+
+mod = ols('Fare ~ CabinType', data=com_cabine).fit()
+                
+aov_table = sm.stats.anova_lm(mod, typ=2)
+print(aov_table)
+
+
+# Há uma diferença significativa das médias de ```Fare``` para os diversos grupos de ```CabinType```. Dessa forma é possível gerar um modelo que encontre o ```CabinType``` em função do ```Fare```
 
 # ## Próximo passo: prever o tipo de cabine
