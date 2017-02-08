@@ -4,11 +4,16 @@
 # # Titanic: Machine Learning from Disaster
 # ## Bibliotecas utilizadas
 
-# In[1]:
+# In[29]:
 
 from numbers import Number
 
+import statsmodels.api as sm
+from statsmodels.formula.api import ols
 import pandas as pd
+from sklearn import tree
+from sklearn.linear_model import LinearRegression
+
 get_ipython().magic('matplotlib inline')
 
 
@@ -82,9 +87,6 @@ com_cabine.boxplot('Fare', by='Cabin_Type', figsize=(12, 8))
 
 # In[8]:
 
-import statsmodels.api as sm
-from statsmodels.formula.api import ols
-
 mod = ols('Fare ~ Cabin_Type', data=com_cabine).fit()
                 
 aov_table = sm.stats.anova_lm(mod, typ=2)
@@ -92,5 +94,27 @@ print(aov_table)
 
 
 # Há uma diferença significativa das médias de ```Fare``` para os diversos grupos de ```CabinType```. Dessa forma é possível gerar um modelo que encontre o ```CabinType``` em função do ```Fare```
+
+# ## Preenchendo os valores missing de idade
+
+# In[46]:
+
+X = com_cabine.loc[com_cabine.Age.notnull(),:].copy()
+Y = X.Age
+del X['Cabin_Type']
+del X['Cabin']
+del X['Age']
+
+linreg = LinearRegression()
+linreg.fit(X, Y)
+
+
+X2 = com_cabine.loc[com_cabine.Age.isnull(),:].copy()
+del X2['Cabin_Type']
+del X2['Cabin']
+del X2['Age']
+com_cabine.Age[com_cabine.Age.isnull()] = linreg.predict(X2)
+com_cabine.describe()
+
 
 # ## Próximo passo: prever o tipo de cabine
