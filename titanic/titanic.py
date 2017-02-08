@@ -4,7 +4,7 @@
 # # Titanic: Machine Learning from Disaster
 # ## Bibliotecas utilizadas
 
-# In[8]:
+# In[1]:
 
 from numbers import Number
 
@@ -37,7 +37,8 @@ train = pd.concat([train, dummies], axis=1)  # Concatena train e dummies
 train.drop(['Sex', 'Embarked', 'Name', 'Ticket'], axis=1, inplace=True)  # Remove colunas inúteis
 
 
-# # Criando a variável CabinType
+# # Criando a variável cabin_type
+# O número da cabine, por si só, não é uma informação muito útil. Porém a letra inicial da cabine pode ser um indicativo da localização da mesma e isso pode indicar o 'status' do passageiro que ocupa aquela cabine. Dessa forma vamos isolar a primeira letra da cabine e chamá-la de CabinType
 
 # In[5]:
 
@@ -51,9 +52,9 @@ def gera_CabinType(cabin):
     else:
         return cabin[0]
 
-CabinTypes = train['Cabin'].apply(gera_CabinType)
-CabinTypes.name = 'CabinType'
-train = pd.concat([train, CabinTypes], axis=1)
+cabin_types = train['Cabin'].apply(gera_CabinType)
+cabin_types.name = 'Cabin_Type'
+train = pd.concat([train, cabin_types], axis=1)
 train.head()
 
 
@@ -68,23 +69,23 @@ def gera_preços(df):
             'Valor máximo': df.Fare.max(),
             }, index=[len(df.Fare)])
 
-train.groupby('CabinType').apply(func=gera_preços)
+train.groupby('Cabin_Type').apply(func=gera_preços)
 
 
-# In[16]:
+# In[7]:
 
 com_cabine = train.loc[train.Cabin.notnull(), :]
-com_cabine.boxplot('Fare', by='CabinType', figsize=(12, 8))
+com_cabine.boxplot('Fare', by='Cabin_Type', figsize=(12, 8))
 
 
 # **É possível ver que há evidências de uma relação entre CabinType e Fare. Vou testar isso com uma ANOVA**
 
-# In[30]:
+# In[8]:
 
 import statsmodels.api as sm
 from statsmodels.formula.api import ols
 
-mod = ols('Fare ~ CabinType', data=com_cabine).fit()
+mod = ols('Fare ~ Cabin_Type', data=com_cabine).fit()
                 
 aov_table = sm.stats.anova_lm(mod, typ=2)
 print(aov_table)
