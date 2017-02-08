@@ -39,4 +39,5 @@ Tive problemas também no Bash on Ubuntu on Windows 10 para plotar gráficos com
 Depois disso consegui executar o jupyter notebook sem problemas e o kernel reconheceu a instalação do pandas.
 
 ## Links para os códigos:
-Aqui estão os links para os códigos
+Aqui estão os links para os códigos<br>
+[Titanic](https://github.com/arthur-gouveia/grupo-de-estudos/tree/master/titanic)
