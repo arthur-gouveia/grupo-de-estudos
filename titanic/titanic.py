@@ -120,4 +120,16 @@ print(aov_table)
 
 # Há uma diferença significativa das médias de ```Fare``` para os diversos grupos de ```CabinType```. Dessa forma é possível gerar um modelo que encontre o ```CabinType``` em função do ```Fare```
 
-# ## Próximo passo: prever o tipo de cabine
+# ## Prevendo o tipo de cabine
+
+# In[37]:
+
+X = com_cabine.drop(['Cabin_Type', 'Cabin'], axis=1)
+y = com_cabine.Cabin_Type.copy()
+
+dtc = tree.DecisionTreeClassifier()
+dtc.fit(X, y)
+
+train.Cabin_Type = dtc.predict(train.drop(['Cabin_Type', 'Cabin'], axis=1))
+train
+
