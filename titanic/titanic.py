@@ -10,9 +10,12 @@ from numbers import Number
 
 import statsmodels.api as sm
 from statsmodels.formula.api import ols
+from statsmodels import __version__ as stmodversion
 import pandas as pd
 from sklearn import tree
+from sklearn import __version__ as skversion
 from sklearn.linear_model import LinearRegression
+import pandas_profiling
 
 get_ipython().magic('matplotlib inline')
 
@@ -122,7 +125,7 @@ print(aov_table)
 
 # ## Prevendo o tipo de cabine
 
-# In[37]:
+# In[11]:
 
 X = com_cabine.drop(['Cabin_Type', 'Cabin'], axis=1)
 y = com_cabine.Cabin_Type.copy()
@@ -132,4 +135,11 @@ dtc.fit(X, y)
 
 train.Cabin_Type = dtc.predict(train.drop(['Cabin_Type', 'Cabin'], axis=1))
 train
+
+
+# ## Análise da base final utilizando pandas_profiling
+
+# In[12]:
+
+pandas_profiling.ProfileReport(train)
 
